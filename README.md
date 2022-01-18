@@ -1,10 +1,12 @@
 # oss-web-deploy
 Deploy web build files to Aliyun Cloud OSS storage
 
+使用前请先将bucket设置为静态网站托管模式，[文档](https://help.aliyun.com/document_detail/31899.html)。
+
 该模块执行以下流程：
 1. 将dist目录打包成zip至指定的路径
 2. 将zip上传到指定的bucket
-3. 请自行在阿里云oss上配置zip解压缩的逻辑
+3. 请自行在阿里云oss上配置zip解压缩的自动[触发器](https://help.aliyun.com/document_detail/106155.html)
 
 ``` ts
 import { deploy } from 'oss-web-deploy'
