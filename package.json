@@ -1,6 +1,6 @@
 {
   "name": "oss-web-deploy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Deploy web build files to Aliyun Cloud OSS storage",
   "main": "dist/index.js",
   "scripts": {
