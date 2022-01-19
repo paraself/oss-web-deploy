@@ -8,28 +8,28 @@ async function upload(distZipFilePath: string, params: IDeployBucket) {
   const ossClient = new OSS(params)
   let headers: { [key: string]: string } = {}
   if (params.tagging) {
-    headers['x-oss-tagging'] = encodeURIComponent(
-      Object.entries(params.tagging)
-        .map(([k, v]) => `${k}=${v}`)
-        .join('&')
-    )
+    headers['x-oss-tagging'] = Object.entries(params.tagging)
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .join('&')
   }
   const res = await retry(
     () =>
-      ossClient.put(params.ossFileName, distZipFilePath, { headers }).then(result => {
-        if (result.res.status !== 200) {
-          throw new Error(JSON.stringify(result))
-        } else return result
-      }),
+      ossClient
+        .put(params.ossFileName, distZipFilePath, { headers })
+        .then((result) => {
+          if (result.res.status !== 200) {
+            throw new Error(JSON.stringify(result))
+          } else return result
+        }),
     { retries: 5, maxTimeout: 10000 }
   )
   console.log('Uploaded as:', res.name)
-  console.log('Url: ', res.url);
+  console.log('Url: ', res.url)
 }
 
 export type IDeployBucket = OSS.Options & {
   /** 文件上传到oss的文件名 */
-  ossFileName: string;
+  ossFileName: string
   /** 文件的标签 */
   tagging?: { [key: string]: any }
 }
@@ -48,9 +48,9 @@ export async function deploy(params: IDeployConfig) {
   await zip(params.distFolderPath, params.distZipFilePath)
   console.log('Compressed dist folder to file: ', params.distZipFilePath)
   for (let i = 0; i < params.buckets.length; i++) {
-    console.log('----------------------------');
+    console.log('----------------------------')
     await upload(params.distZipFilePath, params.buckets[i])
   }
-  console.log('----------------------------');
+  console.log('----------------------------')
   console.log('All done!')
 }
